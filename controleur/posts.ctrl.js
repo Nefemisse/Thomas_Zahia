@@ -22,6 +22,7 @@ module.exports = {
                     done(newPost);
                 })
                 .catch((err) => {
+console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to create posts'})
                 });
             }

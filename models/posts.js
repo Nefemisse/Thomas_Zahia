@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.Posts.belongsTo(models.Users, {
         foreignKey: {
-        allowNull: false
+        allowNull: false,
         }
       })
       models.Posts.hasMany(models.Likes);
