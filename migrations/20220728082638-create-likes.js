@@ -3,13 +3,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Likes', {
       id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       Posts_idPosts: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
@@ -17,7 +15,6 @@ module.exports = {
         }
       },
       Users_idUsers: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Posts',

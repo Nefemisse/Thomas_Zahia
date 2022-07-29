@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.Likes.belongsTo(models.Users, {
         foreignKey: {
-        allowNull: false
+          name: '...'
         }
       })
       /*models.Likes.belongTo(models.Posts.Users, {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       })*/
       models.Likes.belongsTo(models.Posts, {
         foreignKey: {
-        allowNull: false
+          name: '...'
         }
       })
     }

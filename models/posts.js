@@ -13,9 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.Posts.belongsTo(models.Users, {
         foreignKey: {
-        allowNull: false,
+          name: 'Users_idUsers'
         }
       })
+      
       models.Posts.hasMany(models.Likes);
       models.Posts.hasMany(models.Comments);
     }
