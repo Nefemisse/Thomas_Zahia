@@ -20,15 +20,15 @@ exports.router = (() => {
     apiRouter.route('/posts/create/').post(postsCtrl.create)
     apiRouter.route('/post/:id/').put(postsCtrl.update)
     //apiRouter.route('/post/:id/').delete(postsCtrl.delete)
-    //apiRouter.route('/post/:id/').get(usersCtrl.searchOne)
-    //apiRouter.route('/posts/').get(usersCtrl.searchAll)
+    apiRouter.route('/post/:id/').get(postsCtrl.searchOne)
+    apiRouter.route('/posts/').get(postsCtrl.searchAll)
 
     // Comments routes
     apiRouter.route('/comments/create/').post(commentsCtrl.create)
     apiRouter.route('/comment/:id/').put(commentsCtrl.update)
     //apiRouter.route('/comment/:id/').delete(commentsCtrl.delete)
-    //apiRouter.route('/comment/:id/').get(commentsCtrl.searchOne)
-    //apiRouter.route('/comments/').get(commentsCtrl.searchAll)
+    apiRouter.route('/comment/:id/').get(commentsCtrl.searchOne)
+    apiRouter.route('/comments/').get(commentsCtrl.searchAll)
 
     // Likes routes
     //apiRouter.route('/likes/create/').post(likesCtrl.create)
