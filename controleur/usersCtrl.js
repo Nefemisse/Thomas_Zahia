@@ -202,6 +202,7 @@ module.exports = {
         }
 
         models.Users.findOne({
+            attributes: [`id`, `email`,`password`],
             where: { email: email}
         })
         .then((userFound) => {
@@ -221,6 +222,7 @@ module.exports = {
             }
         })
         .catch((err) => {
+console.log(err, email)
             return response.status(500).json({'error': 'unable to verify user'})
         })
     }

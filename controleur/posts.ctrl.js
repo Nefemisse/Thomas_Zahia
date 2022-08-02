@@ -6,11 +6,11 @@ module.exports = {
         // Parameters
         let idUsers = request.body.idUsers
         let content = request.body.content;
-        let attachments= request.body.attachments;
+        let attachments = request.body.attachments;
 
         
         // Fields verification
-        if (content == null) {
+        if (content == null || idUsers == null) {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
@@ -26,7 +26,6 @@ module.exports = {
                     done(newPost);
                 })
                 .catch((err) => {
-console.log(err, idUsers)
                     return response.status(500).json({'error': 'An error occurred : unable to create posts'})
                 });
             }
