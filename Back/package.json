@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/Nefemisse/Thomas_Zahia#readme",
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "async": "^3.2.4",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
