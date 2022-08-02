@@ -2,6 +2,7 @@ const express = require('express')
 const usersCtrl = require('../controleur/usersCtrl')
 const postsCtrl = require('../controleur/posts.ctrl')
 const commentsCtrl = require('../controleur/comments.ctrl')
+const likesCtrl = require('../controleur/likes.crtl')
 //const likesCtrl = require('../controleur/likes.ctrl')
 
 
@@ -31,10 +32,7 @@ exports.router = (() => {
     apiRouter.route('/comments/').get(commentsCtrl.searchAll)
 
     // Likes routes
-    //apiRouter.route('/likes/create/').post(likesCtrl.create)
-    //apiRouter.route('/like/:id/').delete(likesCtrl.delete)
-    //apiRouter.route('/like/:id/').get(likesCtrl.searchOne)
-    //apiRouter.route('/likes/').get(likesCtrl.searchAll)
+    apiRouter.route('/likes/create/:Posts_idPosts').post(likesCtrl.create)
 
     // Admin routes
 
