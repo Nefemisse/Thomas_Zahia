@@ -1,7 +1,6 @@
 
 import Topbar from "../../components/topbar/Topbar";
 import Feed from "../../components/feed/Feed";
-import Rightbar from "../../components/rightbar/Rightbar";
 import "./home.css";
 
 export default function Home() {
@@ -10,7 +9,6 @@ export default function Home() {
         <Topbar />
             <div className="homeContainer">
                 <Feed/>
-                <Rightbar/>
             </div>
     </>
   )
