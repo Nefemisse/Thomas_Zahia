@@ -31,7 +31,6 @@ module.exports = {
                     done(newComment);
                 })
                 .catch((err) => {
-                    console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to create comment'})
                 });
             }
@@ -73,6 +72,7 @@ module.exports = {
                         done(commentFound);
                     })
                     .catch((err) => {
+console.log(err)
                         response.status(400).json({ 'error': 'An error occurred' });
                     });
                 }
@@ -116,7 +116,7 @@ module.exports = {
     searchAll: (request, response) => {
         // Parameters
         models.Comments.findAll({
-            attributes: [ 'id', 'content']
+            attributes: [ 'id', 'content', 'Users_idUsers', 'Posts_idPosts']
             })
         .then(data => {
             if (data) {
