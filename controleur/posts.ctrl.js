@@ -12,7 +12,9 @@ module.exports = {
         
 
         // Fields verification
-        if (content == null || idUsers == null) {
+
+        if (content == '' || idUsers == '') {
+
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
