@@ -19,7 +19,7 @@ module.exports = {
 
         // Fields verification
         
-        if (lastName == null || firstName == null || email == null || password == null) {
+        if (lastName == '' || firstName == '' || email == '' || password == '') {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
@@ -197,7 +197,7 @@ module.exports = {
         let email = request.body.email;
         let password = request.body.password;
 
-        if (email == null || password == null) {
+        if (email == '' || password == '') {
             return response.status(400).json({'error': 'missing parameters'})
         }
 
