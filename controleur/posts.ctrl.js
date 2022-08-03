@@ -7,8 +7,6 @@ module.exports = {
         let idUsers = request.body.idUsers
         let content = request.body.content;
         let attachments= request.body.attachments;
-
-        
         // Fields verification
         if (content == null) {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
