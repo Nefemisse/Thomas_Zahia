@@ -6,7 +6,7 @@ module.exports = {
         // Parameters
         let idUsers = request.body.idUsers // get token cookie
         let content = request.body.content;
-        let attachments = request.body.attachments;
+        let attachments= request.body.attachments;
 
         
         // Fields verification
