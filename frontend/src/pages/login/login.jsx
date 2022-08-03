@@ -6,10 +6,9 @@ export default function Login() {
         <div className="loginWrapper">
             <div className="loginLeft">
               <img className="loginLogo"
-                  src="./images/GroupomAnia/logoblack.png"
-                  alt=""></img>
+                  src="assets/GroupomAnia Logos/logowhite.png" alt=""></img>
               <span className="loginDesc">
-              Connect with friends Groupomania.
+                Connect with friends Groupomania.
               </span>
             </div>
         <div className="loginRight">
