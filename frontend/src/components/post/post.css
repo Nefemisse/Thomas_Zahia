@@ -22,8 +22,8 @@
   }
   
   .postProfileImg {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -31,7 +31,7 @@
   .postUsername {
     font-size: 15px;
     font-weight: 500;
-    margin: 0 10px;
+    margin: 0 15px;
   }
   
   .postDate{

@@ -19,7 +19,9 @@ module.exports = {
         let password = request.body.password;
 
         // Fields verification
+
         if (lastName == "" || firstName == "" || email == "" || password == "") {
+
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
@@ -199,6 +201,7 @@ console.log(request.cookies);
 
         // Fields verification
         if (email == "" || password == "") {
+
             return response.status(400).json({'error': 'missing parameters'})
         }
 
