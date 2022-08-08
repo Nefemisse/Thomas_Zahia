@@ -8,7 +8,7 @@ module.exports = {
   create: (request, response) => {
     // Getting auth header
     //let headerAuth = req.header['authorization'];
-    let idUsers = request.body.idUsers;
+    let idUsers = request.body.idUsers; // get token cookie
     // Params
     var postId = parseInt(request.params.Posts_idPosts);
 
@@ -140,56 +140,44 @@ module.exports = {
       }
     );
   },
-};
-/*
-const Like = models.likes;
+  searchOne: (request, response) => {
+    // Params
+    const id = request.params.id; 
 
-exports.findAllLiks = (req, res, next) => {
-  Like.findAll({where: {
-    Posts_idPosts: req.params.id
-  }})
-  .then(likes => {
-console.log(likes);
-res.status(200).json({data: likes});
-  })
-  .catch(error => res.status(400).json({error}));
-};
-
-exports.createLike = (req, res, next) => {
-  const likeObject = req.body;
-    Like.findAll({where: {
-      Posts_idPosts: req.params.id,
-      idUsers: req.body.idUsers
-    }})
-    .then(likes => {
-      if(likes.length === 0) {
-        const like = new Like({
-          ...likeObject
-        });
-        like.save()
-        .then (() => {
-          Like.findAll({
-            where: {Posts_idPosts: req.params.id}
-          })
-          .then (likes => {
-            res.status(200).json({ like: likes.length});
-          })
-        })
-        .catch(error => res.status(400).json({ error }));
-      } else {
-        Like.destroy({where: {
-          Posts_idPosts: req.params.id,
-          idUsers: req.body.idUsers
-        }})
-        .then(() => {
-          Like.findAll({
-            where: {Posts_idPosts: req.params.id}
-          })
-          .then(likes => {
-            res.status(200).json({ like: likes.length})
-          })
-        })
-        .catch(error => res.status(400).json({error}))
-      }
+    models.Likes.findOne({
+        attributes: [ 'id', 'Posts_idPosts', 'Users_idUsers' ],
+        where: { id: id }
     })
-}*/
+    .then(data => {
+        if (data) {
+            response.status(200).send(data);
+        } else {
+        response.status(400).send({
+            message: `An error occurred : cannot found comment with id=${id}. Maybe comment was not found!`
+          });
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        response.status(400).send({
+            message: `An error occurred : could not found comment with id=${id}.`
+        });
+    });
+  },
+  searchAll: (request, response) => {
+    // Parameters
+    models.Likes.findAll({
+      attributes: [ 'id', 'Posts_idPosts', 'Users_idUsers' ]
+        })
+    .then(data => {
+        if (data) {
+            response.status(200).send(data);
+        }
+    })
+    .catch(err => {
+        response.status(400).send({
+            message: "An error occurred : while retrieving comment."
+        });
+    });
+  },
+};
