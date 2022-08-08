@@ -4,7 +4,7 @@ const models = require('../models')
 module.exports = {
     create: (request, response) => {
         // Parameters
-        let idUsers = request.body.idUsers
+        let idUsers = request.body.idUsers // get token cookie
         let content = request.body.content;
         let attachments = request.body.attachments;
 

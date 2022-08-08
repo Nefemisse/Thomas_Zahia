@@ -1,15 +1,21 @@
 const asyncLib = require('async')
 const models = require('../models')
+const jwt = require('jsonwebtoken')
+const jwtUtils = require('../utils/jwt.utils')
+
+
 
 module.exports = {
     create: (request, response) => {
-        // Parameters
+        // Parameters  
         let content = request.body.content;
-        let idUsers = request.body.idUsers;
-        let idPosts = request.body.idPosts;
+        // get token cookie
+        let idUsers = request.cookies.idUsers
+        // get idPosts from params URI
+        let idPosts = request.params.idPosts;
 
         // Fields verification
-        if (content == null || idUsers == null || idPosts == null) {
+        if (content == "" || idUsers == "" || idPosts == "") {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
@@ -25,13 +31,14 @@ module.exports = {
                     done(newComment);
                 })
                 .catch((err) => {
-console.log(err)
+                    console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to create comment'})
                 });
             }
         ],  
         (newComment) => {
             if(newComment) {
+
                 return response.status(201).json({
                     'commentId': newComment.id, sucess: 'Comment successfully created'
                 })
@@ -66,7 +73,6 @@ console.log(err)
                         done(commentFound);
                     })
                     .catch((err) => {
-console.log(err)
                         response.status(400).json({ 'error': 'An error occurred' });
                     });
                 }
@@ -110,7 +116,7 @@ console.log(err)
     searchAll: (request, response) => {
         // Parameters
         models.Comments.findAll({
-            attributes: [ 'id', 'content', 'Users_idUsers', 'Posts_idPosts']
+            attributes: [ 'id', 'content']
             })
         .then(data => {
             if (data) {
