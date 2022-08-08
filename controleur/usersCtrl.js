@@ -75,8 +75,7 @@ module.exports = {
             } else {
                 return res.status(400).json({ 'error': 'An error occurred : user already exist.'})
             }
-        }
-        )
+        })
     },
     update: (request, response) => {
         // Parameters
