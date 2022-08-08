@@ -6,11 +6,11 @@ const DISLIKED = 0;
 // Routes
 module.exports = {
   create: (request, response) => {
+    // Params
     // Getting auth header
     //let headerAuth = req.header['authorization'];
-    let idUsers = request.body.idUsers; // get token cookie
-    // Params
-    var postId = parseInt(request.params.Posts_idPosts);
+    let idUsers = request.cookies.idUsers; // get token cookie
+    let postId = parseInt(request.params.Posts_idPosts);
 
     if (postId <= 0) {
       return response.status(400).json({ error: "invalid parameters" });
@@ -18,10 +18,6 @@ module.exports = {
     asyncLib.waterfall(
       [
         (done) => {
-          // models.Users.findOne({
-          //   where: { id: idUsers },
-          // })
-          // models.Users.findByPk(idUsers)
           models.Users.findOne({
             attributes: [`id`],
             where: {
@@ -33,7 +29,6 @@ module.exports = {
             })
             .catch(function (err) {
               console.log(err);
-              // console.log(err, idUsers,postId)
               return response
                 .status(500)
                 .json({ error: "unable to verify user" });
@@ -165,7 +160,6 @@ module.exports = {
     });
   },
   searchAll: (request, response) => {
-    // Parameters
     models.Likes.findAll({
       attributes: [ 'id', 'Posts_idPosts', 'Users_idUsers' ]
         })
