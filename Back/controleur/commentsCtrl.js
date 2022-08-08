@@ -72,7 +72,6 @@ module.exports = {
                         done(commentFound);
                     })
                     .catch((err) => {
-console.log(err)
                         response.status(400).json({ 'error': 'An error occurred' });
                     });
                 }
@@ -116,7 +115,7 @@ console.log(err)
     searchAll: (request, response) => {
         // Parameters
         models.Comments.findAll({
-            attributes: [ 'id', 'content', 'Users_idUsers', 'Posts_idPosts']
+            attributes: [ 'id', 'content']
             })
         .then(data => {
             if (data) {
