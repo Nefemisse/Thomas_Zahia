@@ -9,10 +9,8 @@ module.exports = {
     create: (request, response) => {
         // Parameters  
         let content = request.body.content;
-        // get token cookie
-        let idUsers = request.cookies.idUsers
-        // get idPosts from params URI
-        let idPosts = request.params.idPosts;
+        let idUsers = request.cookies.idUsers; // get token cookie
+        let idPosts = request.params.idPosts; // get idPosts from params URI
 
         // Fields verification
         if (content == "" || idUsers == "" || idPosts == "") {
