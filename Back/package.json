@@ -39,6 +39,7 @@
     "node-fetch": "^3.2.10",
     "nodemon": "^2.0.19",
     "path": "^0.12.7",
+    "react-scripts": "^5.0.1",
     "sequelize": "^6.21.3",
     "sequelize-cli": "^6.4.1"
   }
