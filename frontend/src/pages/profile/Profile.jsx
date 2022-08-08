@@ -3,7 +3,7 @@ import Topbar from "../../components/topbar/Topbar";
 import Feed from "../../components/feed/Feed";
 export default function Profile() {
   return (
-    <>
+    <> 
       <Topbar />
       <div className="profile">
             <div className="profileRight">

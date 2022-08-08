@@ -22,6 +22,7 @@ exports.router = (() => {
 
 
     // Posts routes
+
     apiRouter.route('/posts').post(postsCtrl.create)
 
     apiRouter.route('/post/:id').get(postsCtrl.searchOne)
@@ -39,7 +40,6 @@ exports.router = (() => {
 
     apiRouter.route('/comment/:id').put(commentsCtrl.update)
     //apiRouter.route('/comment/:id/1').delete(commentsCtrl.delete)
-
 
     // Likes routes
     apiRouter.route('/likes/:Posts_idPosts').post(likesCtrl.create)

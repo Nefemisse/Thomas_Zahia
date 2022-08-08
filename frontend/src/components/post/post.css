@@ -66,6 +66,12 @@
       margin-right: 5px;
       cursor: pointer;
   }
+  .commentIcon{
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+    cursor: pointer;
+}
   
   .postLikeCounter{
       font-size: 15px;

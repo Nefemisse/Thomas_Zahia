@@ -29,6 +29,7 @@ export default function Post({post}) {
                     <span className="postLikeCounter">{like}people like it</span>
                 </div>
                 <div className="postBottomRight">
+                     <img className="commentIcon" src="assets/images/comment.jpg" alt=""/>
                     <span className="postCommentText">{post.comment}comments</span>
                 </div>
             </div>

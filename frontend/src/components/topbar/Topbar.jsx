@@ -1,4 +1,5 @@
 import "./topbar.css";
+import { NavLink } from "react-router-dom";
 
 export default function Topbar() {
   return (
@@ -9,11 +10,10 @@ export default function Topbar() {
                 </span>
           </div>
           <div className="topbarRight">
-              <div className="topbarLinks">
-                  <span className="topbarLink">Home</span>
-                  <span className="topbarLink">Profile</span>
-                  <span className="topbarLink">Déconnexion</span>
-              </div>
+              <NavLink className="topbarLink" to="/">Home</NavLink>
+              <NavLink className="topbarLink" to="/Profile">Profil</NavLink>
+              <NavLink className="topbarLink" to="/Contact">Contact</NavLink>
+              <NavLink className="topbarLink" to="/Contact">Déconnexion</NavLink> 
           </div>
       </div>
   );
