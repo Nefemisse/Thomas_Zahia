@@ -201,7 +201,7 @@ console.log(request.cookies);
         if (email == "" || password == "") {
             return response.status(400).json({'error': 'missing parameters'})
         }
-
+        
         models.Users.findOne({
             attributes: [`id`, `email`,`password`],
             where: { email: email}
@@ -213,15 +213,8 @@ console.log(request.cookies);
                         // Add token to cookie
                         const token = jwt.sign({ id: userFound.id/*, role: userFound.role */}, "YOUR_SECRET_KEY");
                         console.log(token)
-                        return response
-                            .cookie("access_token", token, {
-                            httpOnly: true,
-                            secure: process.env.NODE_ENV === "development",
-                            })
-                            .status(200)
-                            .json({ message: "Logged in successfully 😊 👌" });
+                        return response.cookie("access_token", token).status(200).json({ message: "Logged in successfully 😊 👌" });
                     } catch (errBycrypt) {
-                        console.log(errBycrypt)
                         return response.status(403).json({error: 'invalid password'})
                     }
                 })
