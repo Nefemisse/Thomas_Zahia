@@ -7,6 +7,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      role: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       lastName: {
         allowNull: false,
         type: Sequelize.STRING
@@ -20,6 +24,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       password: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      isDeleted: {
         allowNull: false,
         type: Sequelize.STRING
       },

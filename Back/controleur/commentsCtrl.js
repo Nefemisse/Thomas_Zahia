@@ -1,7 +1,5 @@
 const asyncLib = require('async')
 const models = require('../models')
-const jwt = require('jsonwebtoken')
-const jwtUtils = require('../utils/jwt.utils')
 
 
 
@@ -44,9 +42,11 @@ module.exports = {
         //
     },
     update: (request, response) => {
+        // Parameters 
         let id = request.params.id;
         let content = request.body.content;
  
+        // Waterfall
         asyncLib.waterfall([
             (done) => {
                 models.Comments.findOne({
@@ -89,7 +89,8 @@ module.exports = {
     },
     searchOne: (request, response) => {
         // Parameters
-        const id = request.params.id;   
+        const id = request.params.id;  
+
         models.Comments.findOne({
             attributes: [ 'id', 'content'],
             where: { id: id }
@@ -104,14 +105,12 @@ module.exports = {
             }
         })
         .catch(err => {
-            console.log(err)
             response.status(400).send({
                 message: `An error occurred : could not found comment with id=${id}.`
             });
         });
     },
     searchAll: (request, response) => {
-        // Parameters
         models.Comments.findAll({
             attributes: [ 'id', 'content']
             })
@@ -128,26 +127,58 @@ module.exports = {
       },
     delete: (request, response) => {
         // Parameters
-    const id = request.params.id;
-    
-    models.Comments.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-            response.status(200).send({
-                message: "comment successfully deleted"
+        const id = request.params.id;
+        let deleted = 0;
+        let role = 0;
+        
+        if (deleted == 0 && role) {
+            deleted = 1;
+        } else if (role == 2 && deleted == 1) {
+            deleted = 2;
+        }
+
+        // Waterfall
+        asyncLib.waterfall([
+            (done) => {
+                models.Comments.findOne({
+                    attributes: [ 'id', 'content'],
+                    where: { 
+                        id: id,
+                        isDeleted: 0 || 1
+                    }
+                })    
+                .then((commentFound) => {
+                    done(commentFound);
+                })
+                .catch((err) => {
+console.log(err)
+                    return response.status(400).json({error: `An error occured : Unable to find comment ${id}`});
                 });
-            } else {
-                response.status(400).send({
-                message: `An error occurred : cannot delete comment with id=${id}.`
+            },
+            (commentFound, done) => {
+                models.Comments.destroy({
+                    where: { 
+                        id: id,
+                        isDeleted: 1
+                    }
+                })
+                .then((commentDelete) => {
+                    done(commentDelete);
+                })
+                .catch((err) => {
+console.log(err)
+                    return response.status(500).json({'error': 'An error occurred : unable to verify Comment'})
                 });
             }
+        ],
+        (commentDelete) => {
+            if(commentDelete) {
+                return response.status(201).json({
+                    'Comment': Comments.id, 'sucess': 'Comment successfully deleted'
+                })
+            } else {
+                return res.status(400).json({ 'error': 'An error occurred : Comment already deleted.'})
+            }
         })
-        .catch(err => {
-            response.status(404).send({
-                message: "Comment with id=" + id + " was not found"
-            });
-        });
     }
 }

@@ -39,10 +39,12 @@ module.exports = {
         })
     },
     update: (request, response) => {
+        // Parameters
         let id = request.params.id;
         let content = request.body.content;
         let attachments = request.body.attachments;
  
+        // Waterfall
         asyncLib.waterfall([
             (done) => {
                 models.Posts.findOne({
@@ -75,18 +77,18 @@ module.exports = {
                 }
             },
         ],
-            (postFound) => {
-                if (postFound) {
-                    response.status(200).json({'success': 'Post successfuly modified'})
-                } else {
-                    response.status(400).json({ 'error': 'An error occurred' })
-                } 
-            }
-        )           
+        (postFound) => {
+            if (postFound) {
+                response.status(200).json({'success': 'Post successfuly modified'})
+            } else {
+                response.status(400).json({ 'error': 'An error occurred' })
+            } 
+        })           
     },
     searchOne: (request, response) => {
         // Parameters
-        const id = request.params.id;   
+        const id = request.params.id;
+
         models.Posts.findOne({
             attributes: [ 'id', 'content', 'attachments','createdAt'],
             where: { id: id }
@@ -121,16 +123,16 @@ module.exports = {
                 message: err + "An error occurred : while retrieving posts."
             });
         });
-      },
-    // Have to verify identity with ? Token ?
+    },
 
+    // Have to verify identity with ? Token ?
     delete: (request, response) => {
         // Parameters
-    const id = request.params.id;
-    
-    models.Posts.destroy({
-        where: { id: id }
-    })
+        const id = request.params.id;
+        
+        models.Posts.destroy({
+            where: { id: id }
+        })
         .then(num => {
             if (num == 1) {
             response.status(200).send({
