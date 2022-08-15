@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const asyncLib = require('async');
 const models = require('../models');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 
 // REGEX
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -19,7 +19,6 @@ module.exports = {
         let password = request.body.password;
 
         // Fields verification
-
         if (lastName == "" || firstName == "" || email == "" || password == "") {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
@@ -47,11 +46,7 @@ module.exports = {
                 });
             },
             (userFound, done) => {
-                if (!userFound) {
-                    bcrypt.hash(password, 5, (err, bcryptedPassword) => { done(null, userFound, bcryptedPassword) })
-                } else { 
-                    response.status(409).json({'error': 'user already exist.'})
-                }
+                !userFound ? bcrypt.hash(password, 5, (err, bcryptedPassword) => { done(null, userFound, bcryptedPassword) }) : response.status(409).json({'error': 'user already exist.'})
             },
             (userFound, bcryptedPassword, done) => {
                 let newUser = models.Users.create({
@@ -69,13 +64,7 @@ module.exports = {
             }
         ],
         (newUser) => {
-            if(newUser) {
-                return response.status(201).json({
-                    'userId': newUser.id, 'sucess': 'User successfully created'
-                })
-            } else {
-                return res.status(400).json({ 'error': 'An error occurred : user already exist.'})
-            }
+            newUser ? response.status(201).json({'userId': newUser.id, 'sucess': `User : ${lastName} ${firstName} successfully created`}) : response.status(400).json({ 'error': 'An error occurred : user already exist.'}) 
         })
     },
     update: (request, response) => {
@@ -101,33 +90,16 @@ module.exports = {
                 });
             },
             (userFound, done) => {
-                if(userFound) {
+                userFound ?
                     userFound.update({
                         lastName: (lastName ? lastName : userFound.lastName),
                         firstName: (firstName ? firstName : userFound.firstName),
                         email: (email ? email : userFound.email),
                         password: (password ? password : userFound.password)
-                    })
-
-                    .then((userFound) => {
-                        done(userFound);
-                    })
-                    .catch((err) => {
-                        response.status(400).json({ 'error': 'An error occurred' });
-                    });
-                }
-                else {
-                  response.status(404).json({ 'error': 'An error occurred' });
-                }
+                    }).then((userFound) => {done(userFound)}).catch((err) => { response.status(400).json({ 'error': 'An error occurred : unable to update' }) }) : response.status(404).json({ 'error': 'An error occurred : user not found' });
             },
         ],
-            (userFound) => {
-                if (userFound) {
-                    response.status(200).json({'success': 'User successfuly modified'})
-                } else {
-                    response.status(400).json({ 'error': 'An error occurred' })
-                } 
-            }
+            (userFound) => { userFound ? response.status(200).json({'success': `User : '${lastName} ${firstName}' successfuly modified`}) : response.status(400).json({ 'error': 'An error occurred' }) }
         )          
     },
     searchOne: (request, response) => {
@@ -140,7 +112,6 @@ module.exports = {
         })
         .then(data => {
             if (data) {
-console.log(request.cookies);
                 response.status(200).send(data);
             } else {
             response.status(400).send({
@@ -156,7 +127,7 @@ console.log(request.cookies);
     },
     searchAll: (request, response) => {
         models.Users.findAll({
-            attributes: [ 'id', 'email', 'firstName', 'lastName']
+                attributes: [ 'id', 'email', 'firstName', 'lastName']
             })
         .then(data => {
             if (data) {
@@ -198,44 +169,40 @@ console.log(request.cookies);
         let email = request.body.email;
         let password = request.body.password;
 
-
         // Fields verification
         if (email == "" || password == "") {
             return response.status(400).json({'error': 'missing parameters'})
         }
 
         models.Users.findOne({
-            attributes: [`id`, `email`,`password`],
+            attributes: [`id`, `email`,`password`, 'firstName'],
             where: { email: email}
         })
         .then((userFound) => {
             if (userFound) {
                 bcrypt.compare(password, userFound.password, (errBycrypt, resBycrypt) => {
+                    if (isAlreadyLog = 1) {
+                        return response.status(400).json({ error: `An error occurred : ${userFound.firstName} already logged.`})
+                    }
                     try {
                         // Add token to cookie
                         const token = jwt.sign({ id: userFound.id/*, role: userFound.role */}, "YOUR_SECRET_KEY");
-                        console.log(token)
-                        return response
-                            .cookie("access_token", token, {
-                            httpOnly: true,
-                            secure: process.env.NODE_ENV === "development",
-                            })
-                            .status(200)
-                            .json({ message: "Logged in successfully 😊 👌" });
+                        isAlreadyLog = 1
+                        console.log(data);
+                        return response.cookie("access_token", token).status(200).json({message: `${userFound.firstName} is logged in successfully 😊 👌`}), response.redirect('/UserHomePage');;
                     } catch (errBycrypt) {
-                        console.log(errBycrypt)
                         return response.status(403).json({error: 'invalid password'})
                     }
                 })
             } else {
-                return response.status(404).json({error: 'user not exist in DB'})
+                return response.status(404).json({error: 'User not exist in DB'})
             }
         })
         .catch((err) => {
-            return response.status(500).json({'An error occurred': 'unable to verify user, maybe invalid email'})
+            return response.status(500).json({'An error occurred': 'Unable to verify user, maybe invalid email'})
         })
     },
     logout: (request, response) => {
-        return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"})
-    }
+        return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"});
+    },
 }

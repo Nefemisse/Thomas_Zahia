@@ -3,7 +3,6 @@ const usersCtrl = require('../controleur/usersCtrl')
 const postsCtrl = require('../controleur/posts.ctrl')
 const commentsCtrl = require('../controleur/comments.ctrl')
 const likesCtrl = require('../controleur/likes.crtl')
-//const likesCtrl = require('../controleur/likes.ctrl')
 
 
 // Router
