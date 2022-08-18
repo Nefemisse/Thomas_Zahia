@@ -33,7 +33,7 @@ exports.addUser = async (req, res) => {
 
 exports.getUserByToken = async (req, res, next) => {
     
-    const response = await fetch('http://localhost:8000/api/getUser',{
+    const response = await fetch('http://localhost:8000/api/getOneUser',{
         headers: {
             'Authorization': localStorage.getItem('token')// Token à récupérer 
         }
