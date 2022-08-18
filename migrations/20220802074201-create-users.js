@@ -9,7 +9,8 @@ module.exports = {
       },
       role: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       lastName: {
         allowNull: false,
@@ -29,7 +30,8 @@ module.exports = {
       },
       isDeleted: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

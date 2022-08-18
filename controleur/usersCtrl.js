@@ -3,11 +3,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const asyncLib = require('async');
 const models = require('../models');
-//const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
+const jwtUtils = require('../utils/jwt.utils');
+const dotenv = require('dotenv').config();
 
 // REGEX
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const PASWORD_REGEX = /^(?=.*\d).{4,18}$/
+const PASWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[æÆÐ!@#&$()[{.\]\}-])(?=.*[éêëèåàäâáãïîöôüûyÿŷÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÖÔÕÙÚÛÜÝŶŶ]).{4,20}$/
 
 //Routes
 module.exports = {
@@ -28,9 +30,10 @@ module.exports = {
         }
         
         if (!PASWORD_REGEX.test(password)) {
+            console.log(password);
             return response.status(400).json({'error': 'An error occured : password invalid (must length 4 - 18 and include 1 number)'})
         }
-        
+
         // Waterfall
         asyncLib.waterfall([
             (done) => {
@@ -59,6 +62,7 @@ module.exports = {
                     done(newUser);
                 })
                 .catch((err) => {
+                    console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to verify user'})
                 });
             }
@@ -102,12 +106,41 @@ module.exports = {
             (userFound) => { userFound ? response.status(200).json({'success': `User : '${lastName} ${firstName}' successfuly modified`}) : response.status(400).json({ 'error': 'An error occurred' }) }
         )          
     },
+    getUserMe: (request, response, next) => {
+
+        let headerAuth = request.cookies.auth;
+        //const usersId = jwtUtils.getUsersId(headerAuth)
+        const usersId = request.body.id
+
+        if(usersId < 0) {
+            return response.status(400).json({error: 'An error occured: wrong token'});
+        }
+
+        models.Users.findOne({
+            attributes: ['id', 'lastName', 'firstName', 'email'],
+            where: {id: usersId }
+        })
+        .then((users) => {
+            if (users) {
+                request.users = users;
+                response.status(201).json(users);
+                return next();
+            } else {
+                response.status(404).json({error: 'user not found'})
+                return next();
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            response.status(500).json({error: 'Cannot fetch user'});
+        });
+    },
     searchOne: (request, response) => {
         // Parameters
         const id = request.params.id;
 
         models.Users.findOne({
-            attributes: [ 'id', 'email', 'firstName', 'lastName'],
+            attributes: [ 'id', 'email', 'firstName', 'lastName', 'role'],
             where: { id: id }
         })
         .then(data => {
@@ -173,24 +206,21 @@ module.exports = {
         if (email == "" || password == "") {
             return response.status(400).json({'error': 'missing parameters'})
         }
-
         models.Users.findOne({
             attributes: [`id`, `email`,`password`, 'firstName'],
-            where: { email: email}
+            where: { email: email }
         })
         .then((userFound) => {
             if (userFound) {
                 bcrypt.compare(password, userFound.password, (errBycrypt, resBycrypt) => {
-                    if (isAlreadyLog = 1) {
-                        return response.status(400).json({ error: `An error occurred : ${userFound.firstName} already logged.`})
-                    }
-                    try {
+                    console.log(password,'-------1-----',userFound.password)
+                        // return response.status(400).json({ error: `An error occurred : ${userFound.firstName} already logged.`})
+                    if (resBycrypt) {
                         // Add token to cookie
-                        const token = jwt.sign({ id: userFound.id/*, role: userFound.role */}, "YOUR_SECRET_KEY");
-                        isAlreadyLog = 1
-                        console.log(data);
-                        return response.cookie("access_token", token).status(200).json({message: `${userFound.firstName} is logged in successfully 😊 👌`}), response.redirect('/UserHomePage');;
-                    } catch (errBycrypt) {
+                        const token = jwt.sign({ id: userFound.id, role: userFound.role }, "YOUR_SECRET_KEY");
+                        let cookieUsers = response.cookie(process.env.TOKEN_NAME, token).status(200).json({message: `${userFound.firstName} is successfully logged  😊 👌`})
+                        return cookieUsers;//, response.redirect('/UserHomePage');;
+                    } else {
                         return response.status(403).json({error: 'invalid password'})
                     }
                 })
@@ -203,6 +233,6 @@ module.exports = {
         })
     },
     logout: (request, response) => {
-        return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"});
+        return response.clearCookie(process.env.TOKEN_NAME).status(200).json({success: "Successfully logged out 😏 🍀"});
     },
 }

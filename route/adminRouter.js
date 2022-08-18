@@ -9,17 +9,18 @@ exports.router = (() => {
     const adminRouter = express.Router();
 
     // Users routes
-    adminRouter.route('/users/login').post(usersCtrl.login)
-    adminRouter.route('/users/logout').post(usersCtrl.logout)
+    adminRouter.route('/admin/register').post(usersCtrl.login)
+    adminRouter.route('/admin/login').post(usersCtrl.logout)
+    adminRouter.route('/admin/logout').post(usersCtrl.logout)
 
-    adminRouter.route('/user/:id').get(usersCtrl.searchOne)
-    adminRouter.route('/users').get(usersCtrl.searchAll)
+    adminRouter.route('/admin/getOneUser/:id').get(usersCtrl.searchOne)
+    adminRouter.route('/admin/getAllUsers').get(usersCtrl.searchAll)
 
-    adminRouter.route('/user/:id').delete(usersCtrl.delete)
+    adminRouter.route('/admin/deleteUser/:id').delete(usersCtrl.delete)
 
     // Posts routes
-    adminRouter.route('/post/:id').get(postsCtrl.searchOne)
-    adminRouter.route('/posts').get(postsCtrl.searchAll)
+    adminRouter.route('/admin/getOnePost/:id').get(postsCtrl.searchOne)
+    adminRouter.route('/admin/getAllPosts').get(postsCtrl.searchAll)
 
     adminRouter.route('/post/:id').delete(postsCtrl.delete)
 
