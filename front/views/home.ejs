@@ -1,0 +1,30 @@
+<%- include('./partials/header'); %>
+<div class="container">
+    <h1>je suis dans home</h1>
+  <% allPosts.forEach(function(item){ %>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= item.Users_idUsers %> 
+          </h5>
+          
+          <p class="card-text"><%= item.createAt %> </p>
+          <p class="card-text"><%= item.content %> </p>
+          
+        </div>
+        <img src="..." class="card-img-top" alt="...">
+        <!-- <ul class="list-group list-group-flush">
+          <li class="list-group-item">An item</li>
+          <li class="list-group-item">A second item</li>
+          <li class="list-group-item">A third item</li>
+        </ul> -->
+        <div class="card-body">
+          <a href="#" class="card-link">Submit</a>
+          <a href="#" class="card-link">supprimer</a>
+        </div>
+      </div>
+      <br>
+      <br>
+    <% }) %> 
+</div>
+<%- include('./partials/footer'); %>

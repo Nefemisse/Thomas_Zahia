@@ -1,0 +1,48 @@
+
+    <%- include('./partials/header'); %>
+
+    <div class="container">
+        <% if(locals.errorMessage) { %>
+            <div class="alert alert-danger">
+                <%- locals.errorMessage %>
+            </div>
+        <% } %>
+        <% if(locals.successMessage) { %>
+            <div class="alert alert-success">
+                <%- locals.successMessage %>
+                <a href="/">click ici pour te connecter</a>
+            </div>
+        <% } %>
+        <div class="col-12 mt-5">
+            <div class="col-6 login-left container">
+            </div>
+            <div class="col-6  container">
+                
+                <form method="POST" action="/register">
+                    <div class="form-group">
+                        <label for="firstName">Firt Name:</label>
+                        <input type="text" class="form-control" name="firstName"  placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" class="form-control" name="lastName"  placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address: (*)</label>
+                        <input type="text" name="email" class="form-control"  placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password: (*)</label>
+                        <input type="password" name="password" class="form-control"  placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <hr>
+                <div>
+                    If you already have had an account. <a href="/" class="loog">Log in</a>.
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    <%- include('./partials/footer'); %>
