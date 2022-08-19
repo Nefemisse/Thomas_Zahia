@@ -30,7 +30,6 @@ module.exports = {
         }
         
         if (!PASWORD_REGEX.test(password)) {
-            console.log(password);
             return response.status(400).json({'error': 'An error occured : password invalid (must length 4 - 18 and include 1 number)'})
         }
 
@@ -62,7 +61,6 @@ module.exports = {
                     done(newUser);
                 })
                 .catch((err) => {
-                    console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to verify user'})
                 });
             }
@@ -94,14 +92,21 @@ module.exports = {
                 });
             },
             (userFound, done) => {
+                userFound ? bcrypt.hash(password, 5, (err, bcryptedPassword) => { done(null, userFound, bcryptedPassword); userFound.update({password: bcryptedPassword}) }) : response.status(409).json({'error': 'user already exist.'})
+            },
+            (userFound, bcryptedPassword, done) => {
                 userFound ? userFound.update({
                     lastName: (lastName ? lastName : userFound.lastName),
                     firstName: (firstName ? firstName : userFound.firstName),
                     email: (email ? email : userFound.email),
-                    password: (password ? password : userFound.password)
-                }).then((userFound) => {done(userFound)}).catch((err) => { response.status(400).json({ 'error': 'An error occurred : unable to update' }) }) : response.status(404).json({ 'error': 'An error occurred : user not found' });
+                    password: (password ? bcryptedPassword : userFound.password)
+                })
+                .then((userFound) => {done(userFound)}).catch((err) => { response.status(400).json({ 'error': 'An error occurred : unable to update' }) }) : response.status(404).json({ 'error': 'An error occurred : user not found' });
             },
-        ],  
+            (userFound, done) => {
+                userFound ? bcrypt.hash(password, 5, (err, bcryptedPassword) => { done(null, userFound, bcryptedPassword) }) : response.status(409).json({'error': 'user already exist.'})
+            },
+        ],
             (userFound) => { userFound ? response.status(200).json({'success': `User : '${lastName} ${firstName}' successfuly modified`}) : response.status(400).json({ 'error': 'An error occurred' }) }
         )          
     },
@@ -130,7 +135,6 @@ module.exports = {
             }
         })
         .catch((err) => {
-            console.log(err);
             response.status(500).json({error: 'Cannot fetch user'});
         });
     },
@@ -212,13 +216,11 @@ module.exports = {
         .then((userFound) => {
             if (userFound) {
                 bcrypt.compare(password, userFound.password, (errBycrypt, resBycrypt) => {
-                    console.log(password,'-------1-----',userFound.password)
-                        // return response.status(400).json({ error: `An error occurred : ${userFound.firstName} already logged.`})
                     if (resBycrypt) {
                         // Add token to cookie
                         const token = jwt.sign({ id: userFound.id, role: userFound.role }, "YOUR_SECRET_KEY");
                         let cookieUsers = response.cookie(process.env.TOKEN_NAME, token).status(200).json({message: `${userFound.firstName} is successfully logged  😊 👌`})
-                        return cookieUsers;//, response.redirect('/UserHomePage');;
+                        return cookieUsers;
                     } else {
                         return response.status(403).json({error: 'invalid password'})
                     }
