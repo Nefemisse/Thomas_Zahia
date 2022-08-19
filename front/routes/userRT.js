@@ -18,6 +18,8 @@ route.post('/register',userCtrl.addUser)
 route.get('/profile',(req,res)=>{
     res.render('profile');
 })
+
+route.get('/logout',userCtrl.logOut)
 // route.get('/getUserById/:id',userCtrl.getUserById);
 // route.get('/allUsers', userCtrl.getAllUsers);
 

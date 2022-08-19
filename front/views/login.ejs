@@ -1,14 +1,15 @@
 
-<%- include('./partials/header'); %>
+<%- include('./partials/adheader'); %>
 
     <div class="container">
-        <% if(locals.errorMessage) { %>
+        <% if(locals.error || locals.errorMessage) { %>
             <div class="alert alert-danger">
+                <%- locals.error %>
                 <%- locals.errorMessage %>
             </div>
         <% } %>
         <% if(locals.successMessage) { %>
-            <div class="alert alert-danger">
+            <div class="alert alert-success">
                 <%- locals.successMessage %>
             </div>
         <% } %>

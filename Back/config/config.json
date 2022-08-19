@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "root",
-    "password": "iscomborch16",
-    "database": "database_development_Zahia_Thomas_3",
+    "password": "",
+    "database": "database_development_Zahia_Thomas",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "iscomborch16",
-    "database": "database_test_Zahia_Thomas_3",
+    "password": "",
+    "database": "database_test_Zahia_Thomas",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "iscomborch16",
+    "password": "",
     "database": "database_production_Zahia_Thomas",
     "host": "127.0.0.1",
     "dialect": "mysql"

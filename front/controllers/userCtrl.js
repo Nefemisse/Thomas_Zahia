@@ -46,17 +46,14 @@ exports.getUserByToken = async (req, res, next) => {
 exports.logUser = async (req, res, next) => {
 
     await fetch("http://localhost:8000/api/login", {
-
         // Adding method type
         method: "POST",
-
         // Adding headers to the request
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           credentials: 'same-origin',
-          
         // Adding body or contents to send
         body: JSON.stringify({
             email : req.body.email,
@@ -74,17 +71,30 @@ exports.logUser = async (req, res, next) => {
     .then(json => {
         console.log('toto', json);
         localStorage.setItem('token', json.token);
-        console.log(localStorage.getItem('token'));
-        res.render('login', json)
-        if(json.token)
+        const tokenFromLocalStorage = localStorage.getItem('token')
+        console.log(tokenFromLocalStorage);
+       
+        if(json.token && tokenFromLocalStorage) 
             res.redirect('/profile')
+        else
+            res.render('login', json)
+        
     })
 
     .catch((err) => {
         console.error(err);
-        res.render('login', json)
     })
 
+}
+exports.logOut = async(req, res, next) => {
+    const tokenFromLocalStorage = localStorage.getItem('token')
+    if(tokenFromLocalStorage) {
+        localStorage.clear();
+        res.redirect('/')
+    }
+    // await fetch("http://localhost:8000/api/logout"),{
+
+    // }
 }
  // exports.getAllUsers = async (req, res) => {
     

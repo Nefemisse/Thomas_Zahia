@@ -252,7 +252,9 @@ console.log(request.cookies);
         })
     },
     logout: (request, response) => {
-        return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"})
+        console.log('je suis dedans ');
+        localStorage.clear();
+        //return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"})
     }
     // loggedIn: (request, response) => {
     //     return response.clearCookie('access_token').status(200).json({success: "Successfully logged out 😏 🍀"})
