@@ -9,7 +9,7 @@ const dotenv = require('dotenv').config();
 
 // REGEX
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const PASWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[æÆÐ!@#&$()[{.\]\}-])(?=.*[éêëèåàäâáãïîöôüûyÿŷÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÖÔÕÙÚÛÜÝŶŶ]).{4,20}$/
+const PASWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[æÆÐ!@#&$()[{.\]\}-])(?=.*[éêëèåàäâáãïîöôüûyÿŷÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÖÔÕÙÚÛÜÝŶŶ]).{4,255}$/
 
 //Routes
 module.exports = {
@@ -94,15 +94,14 @@ module.exports = {
                 });
             },
             (userFound, done) => {
-                userFound ?
-                    userFound.update({
-                        lastName: (lastName ? lastName : userFound.lastName),
-                        firstName: (firstName ? firstName : userFound.firstName),
-                        email: (email ? email : userFound.email),
-                        password: (password ? password : userFound.password)
-                    }).then((userFound) => {done(userFound)}).catch((err) => { response.status(400).json({ 'error': 'An error occurred : unable to update' }) }) : response.status(404).json({ 'error': 'An error occurred : user not found' });
+                userFound ? userFound.update({
+                    lastName: (lastName ? lastName : userFound.lastName),
+                    firstName: (firstName ? firstName : userFound.firstName),
+                    email: (email ? email : userFound.email),
+                    password: (password ? password : userFound.password)
+                }).then((userFound) => {done(userFound)}).catch((err) => { response.status(400).json({ 'error': 'An error occurred : unable to update' }) }) : response.status(404).json({ 'error': 'An error occurred : user not found' });
             },
-        ],
+        ],  
             (userFound) => { userFound ? response.status(200).json({'success': `User : '${lastName} ${firstName}' successfuly modified`}) : response.status(400).json({ 'error': 'An error occurred' }) }
         )          
     },

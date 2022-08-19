@@ -57,7 +57,7 @@ server.get('/', myProfile.loggedIn, postsCtrl.searchAll);
 server.get('/profil', myProfile.loggedIn, usersCtrl.getUserMe); // fonction ?
 
 //Admin Router
-server.use('/api/admin', adminRouter);
+server.use('/api', adminRouter);
 
 //Listener
 const start = (port) => {
