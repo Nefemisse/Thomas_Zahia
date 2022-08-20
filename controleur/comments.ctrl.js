@@ -7,24 +7,19 @@ module.exports = {
     create: (request, response) => {
         // Parameters  
         let content = request.body.content;
-        let idUsers = request.cookies.idUsers; // get token cookie
+        let idUsers = request.body.idUsers; // get token cookie
         let idPosts = request.params.idPosts; // get idPosts from params URI
 
         // Fields verification
-        if (content == "" || idUsers == "" || idPosts == "") {
+        if (content == null || idUsers == null || idPosts == null) {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
-
         let newComment = models.Comments.create({
             content: content,
             Users_idUsers: idUsers,
             Posts_idPosts: idPosts
         })
-        if(newComment) {
-            return response.status(201).json({'commentId': newComment.id, sucess: 'Comment successfully created'})
-        } else {
-            return response.status(500).json({'error': 'An error occurred : unable to create comment'})
-        }
+        newComment ? response.status(201).json({'commentId': newComment.id, sucess: 'Comment successfully created'}) : response.status(500).json({'error': 'An error occurred : unable to create comment'})
     },
     update: (request, response) => {
         // Parameters 
@@ -41,34 +36,25 @@ module.exports = {
                 .then((commentFound) => {
                     done(null, commentFound);
                 })
-                .catch((err) => {
-                    return response.status(400).json({ 'error': 'Unable to verify Comment' });
-                });
+                .catch((err) => {return response.status(400).json({ 'error': 'Unable to verify Comment' })});
             },
             (commentFound, done) => {
                 if(commentFound) {
                     commentFound.update({
                         content: (content ? content : commentFound.content)
                     })
-
                     .then((commentFound) => {
                         done(commentFound);
                     })
-                    .catch((err) => {
-                        response.status(400).json({ 'error': 'An error occurred' });
-                    });
+                    .catch((err) => {response.status(400).json({ 'error': 'An error occurred' })});
                 }
                 else {
                   response.status(404).json({ 'error': 'An error occurred' });
                 }
             },
         ],
-            (commentFound) => {
-                if (commentFound) {
-                    response.status(200).json({'success': 'Comment successfuly modified'})
-                } else {
-                    response.status(400).json({ 'error': 'An error occurred' })
-                } 
+            (commentFound) => { 
+                commentFound ? response.status(200).json({'success': 'Comment successfuly modified'}) : response.status(400).json({ 'error': 'An error occurred' })
             }
         )           
     },
@@ -81,35 +67,19 @@ module.exports = {
             where: { id: id }
         })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            } else {
-            response.status(400).send({
-                message: `An error occurred : cannot found comment with id=${id}. Maybe comment was not found!`
-              });
-            }
+            data ? response.status(200).send(data) : response.status(400).send({message: `An error occurred : cannot found comment with id=${id}. Maybe comment was not found!`});
         })
-        .catch(err => {
-            response.status(400).send({
-                message: `An error occurred : could not found comment with id=${id}.`
-            });
-        });
+        .catch(err => {response.status(400).send({message: `An error occurred : could not found comment with id=${id}.`})});
     },
     searchAll: (request, response) => {
         models.Comments.findAll({
             attributes: [ 'id', 'content']
             })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            }
+            data && response.status(200).send(data);
         })
-        .catch(err => {
-            response.status(400).send({
-                message: "An error occurred : while retrieving comment."
-            });
-        });
-      },
+        .catch(err => {response.status(400).send({message: "An error occurred : while retrieving comment."})});
+    },
     delete: (request, response) => {
         // Parameters
         const id = request.params.id;
@@ -135,10 +105,7 @@ module.exports = {
                 .then((commentFound) => {
                     done(commentFound);
                 })
-                .catch((err) => {
-console.log(err)
-                    return response.status(400).json({error: `An error occured : Unable to find comment ${id}`});
-                });
+                .catch((err) => {return response.status(400).json({error: `An error occured : Unable to find comment ${id}`})});
             },
             (commentFound, done) => {
                 models.Comments.destroy({
@@ -150,20 +117,11 @@ console.log(err)
                 .then((commentDelete) => {
                     done(commentDelete);
                 })
-                .catch((err) => {
-console.log(err)
-                    return response.status(500).json({'error': 'An error occurred : unable to verify Comment'})
-                });
+                .catch((err) => {return response.status(500).json({'error': 'An error occurred : unable to verify Comment'})});
             }
         ],
         (commentDelete) => {
-            if(commentDelete) {
-                return response.status(201).json({
-                    'Comment': Comments.id, 'sucess': 'Comment successfully deleted'
-                })
-            } else {
-                return res.status(400).json({ 'error': 'An error occurred : Comment already deleted.'})
-            }
+            commentDelete ? response.status(201).json({'Comment': Comments.id, 'sucess': 'Comment successfully deleted'}) : res.status(400).json({ 'error': 'An error occurred : Comment already deleted.'})
         })
     }
 }

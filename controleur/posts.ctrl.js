@@ -4,14 +4,12 @@ const models = require('../models')
 module.exports = {
     create: (request, response) => {
         // Parameters
-        let idUsers = request.cookies.idUsers; // get token cookie
+        let idUsers = request.body.idUsers; // get token cookie
         let content = request.body.content;
         let attachments = request.body.attachments;
 
         // Fields verification
-        if (content == "" || idUsers == "") {
-            return response.status(400).json({'error': 'An error occured : Missing parameters'});
-        }
+        if (content == "" || idUsers == "") return response.status(400).json({'error': 'An error occured : Missing parameters'});
         
         // Waterfall
         asyncLib.waterfall([
@@ -30,11 +28,7 @@ module.exports = {
             }
         ],
         (newPost) => {
-            if(newPost) {
-                return response.status(201).json({
-                    'postId': newPost.id, sucess: 'Post successfully created'
-                })
-            } 
+            if(newPost) return response.status(201).json({'postId': newPost.id, sucess: 'Post successfully created'})
         })
     },
     update: (request, response) => {
@@ -77,11 +71,7 @@ module.exports = {
             },
         ],
         (postFound) => {
-            if (postFound) {
-                response.status(200).json({'success': 'Post successfuly modified'})
-            } else {
-                response.status(400).json({ 'error': 'An error occurred' })
-            } 
+            postFound ? response.status(200).json({'success': 'Post successfuly modified'}) : response.status(400).json({ 'error': 'An error occurred' })
         })           
     },
     searchOne: (request, response) => {
@@ -93,13 +83,7 @@ module.exports = {
             where: { id: id }
         })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            } else {
-            response.status(400).send({
-                message: `An error occurred : cannot found posts with id=${id}. Maybe posts was not found!`
-              });
-            }
+            data ? response.status(200).send(data) : response.status(400).send({message: `An error occurred : cannot found posts with id=${id}. Maybe posts was not found!`});
         })
         .catch(err => {
             response.status(400).send({
@@ -112,14 +96,10 @@ module.exports = {
             attributes: [ 'id', 'content', 'attachments']
             })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            }
+            if (data) response.status(200).send(data);
         })
         .catch(err => {
-            response.status(400).send({
-                message: "An error occurred : while retrieving posts."
-            });
+            response.status(400).send({message: "An error occurred : while retrieving posts."});
         });
     },
 
@@ -132,15 +112,7 @@ module.exports = {
             where: { id: id }
         })
         .then(num => {
-            if (num == 1) {
-            response.status(200).send({
-                message: "posts successfully deleted"
-                });
-            } else {
-                response.status(400).send({
-                message: `An error occurred : cannot delete posts with id=${id}.`
-                });
-            }
+            num == 1 ? response.status(200).send({message: "posts successfully deleted"}) : response.status(400).send({message: `An error occurred : cannot delete posts with id=${id}.`});
         })
         .catch(err => {
             response.status(404).send({

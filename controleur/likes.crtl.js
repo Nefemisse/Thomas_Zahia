@@ -12,9 +12,7 @@ module.exports = {
     let postId = parseInt(request.params.Posts_idPosts);
 
     // Verify if post exist
-    if (postId <= 0) {
-      return response.status(400).json({ error: "invalid parameters" });
-    }
+    if (postId <= 0) return response.status(400).json({ error: "invalid parameters" });
 
     // Waterfall
     asyncLib.waterfall([
@@ -113,11 +111,7 @@ module.exports = {
       },
     ],
     (postFound) => {
-      if (postFound) {
-        return response.status(201).json(postFound);
-      } else {
-        return response.status(500).json({ error: "cannot update post" });
-      }
+      postFound ? response.status(201).json(postFound) : response.status(500).json({ error: "cannot update post" });
     });
   },
   searchOne: (request, response) => {
@@ -129,13 +123,7 @@ module.exports = {
       where: { id: id }
     })
     .then(data => {
-      if (data) {
-        response.status(200).send(data);
-      } else {
-        response.status(400).send({
-          message: `An error occurred : cannot found comment with id=${id}. Maybe comment was not found!`
-        });
-      }
+      data ? response.status(200).send(data) : response.status(400).send({ message: `An error occurred : cannot found comment with id=${id}. Maybe comment was not found!` });
     })
     .catch(err => {
       response.status(400).send({
@@ -148,9 +136,7 @@ module.exports = {
       attributes: [ 'id', 'Posts_idPosts', 'Users_idUsers' ]
     })
     .then(data => {
-      if (data) {
-        response.status(200).send(data);
-      }
+      if (data) response.status(200).send(data)
     })
     .catch(err => {
       response.status(400).send({

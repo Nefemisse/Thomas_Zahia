@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const asyncLib = require('async');
 const models = require('../models');
 const cookieParser = require('cookie-parser');
-const jwtUtils = require('../utils/jwt.utils');
 const dotenv = require('dotenv').config();
 
 // REGEX
@@ -21,17 +20,11 @@ module.exports = {
         let password = request.body.password;
 
         // Fields verification
-        if (lastName == "" || firstName == "" || email == "" || password == "") {
-            return response.status(400).json({'error': 'An error occured : Missing parameters'});
-        }
+        if (lastName == "" || firstName == "" || email == "" || password == "") return response.status(400).json({'error': 'An error occured : Missing parameters'});
         
-        if (!EMAIL_REGEX.test(email)) {
-            return response.status(400).json({'error': 'An error occured : email is not valid'})
-        }
+        if (!EMAIL_REGEX.test(email)) return response.status(400).json({'error': 'An error occured : email is not valid'})
         
-        if (!PASWORD_REGEX.test(password)) {
-            return response.status(400).json({'error': 'An error occured : password invalid (must length 4 - 18 and include 1 number)'})
-        }
+        if (!PASWORD_REGEX.test(password)) return response.status(400).json({'error': 'An error occured : password invalid (must length 4 - 255 and include 1 number, 1 uppercase, 1 lowercase, 1 special character and 1 accent )'})
 
         // Waterfall
         asyncLib.waterfall([
@@ -77,6 +70,8 @@ module.exports = {
         let email = request.body.email;
         let password = request.body.password;   
         
+        if (!PASWORD_REGEX.test(password)) return response.status(400).json({'error': 'An error occured : password invalid (must length 4 - 255 and include 1 number, 1 uppercase, 1 lowercase, 1 special character and 1 accent )'});
+
         // Waterfall
         asyncLib.waterfall([
             (done) => {
@@ -112,13 +107,9 @@ module.exports = {
     },
     getUserMe: (request, response, next) => {
 
-        let headerAuth = request.cookies.auth;
-        //const usersId = jwtUtils.getUsersId(headerAuth)
-        const usersId = request.body.id
+        const usersId = request.body.id;
 
-        if(usersId < 0) {
-            return response.status(400).json({error: 'An error occured: wrong token'});
-        }
+        if(usersId < 0) return response.status(400).json({error: 'An error occured: wrong token'})
 
         models.Users.findOne({
             attributes: ['id', 'lastName', 'firstName', 'email'],
@@ -147,18 +138,10 @@ module.exports = {
             where: { id: id }
         })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            } else {
-            response.status(400).send({
-                message: `An error occurred : cannot found user with id=${id}. Maybe user was not found!`
-              });
-            }
+            data ? response.status(200).send(data) : response.status(400).send({ message: `An error occurred : cannot found user with id=${id}. Maybe user was not found!` });          
         })
         .catch(err => {
-            response.status(400).send({
-                message: `An error occurred : could not found user with id=${id}.`
-            });
+            response.status(400).send({message: `An error occurred : could not found user with id=${id}.`});
         });
     },
     searchAll: (request, response) => {
@@ -184,17 +167,11 @@ module.exports = {
             where: { id: id }
         })
         .then(num => {
-            if (num == 1) {
-            response.status(200).send({
-                    message: "User successfully deleted 😊"
-                });
-            } else {
-                response.status(400).send({
-                    message: `An error occurred : cannot delete user with id=${id}.`
-                });
-            }
+            num == 1 ? response.status(200).send({ message: "User successfully deleted 😊" }) : response.status(400).send({ message: `An error occurred : cannot delete user with id=${id}.` });
+            
         })
         .catch(err => {
+            console.log(err);
             response.status(404).send({
                 message: "User with id=" + id + " was not found"
             });
@@ -206,9 +183,8 @@ module.exports = {
         let password = request.body.password;
 
         // Fields verification
-        if (email == "" || password == "") {
-            return response.status(400).json({'error': 'missing parameters'})
-        }
+        if (email == "" || password == "") return response.status(400).json({'error': 'missing parameters'})
+
         models.Users.findOne({
             attributes: [`id`, `email`,`password`, 'firstName'],
             where: { email: email }
