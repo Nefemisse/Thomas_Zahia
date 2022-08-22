@@ -33,3 +33,4 @@
 
 node_modules/
 key.js
+.env

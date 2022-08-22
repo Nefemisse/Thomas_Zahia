@@ -4,15 +4,12 @@ const models = require('../models')
 module.exports = {
     create: (request, response) => {
         // Parameters
-        let idUsers = request.body.idUsers
+        let idUsers = request.body.idUsers; // get token cookie
         let content = request.body.content;
-        let attachments= request.body.attachments;
+        let attachments = request.body.attachments;
 
-        
         // Fields verification
-        if (content == null) {
-            return response.status(400).json({'error': 'An error occured : Missing parameters'});
-        }
+        if (content == "" || idUsers == "") return response.status(400).json({'error': 'An error occured : Missing parameters'});
         
         // Waterfall
         asyncLib.waterfall([
@@ -26,28 +23,25 @@ module.exports = {
                     done(newPost);
                 })
                 .catch((err) => {
-console.log(err, idUsers)
                     return response.status(500).json({'error': 'An error occurred : unable to create posts'})
                 });
             }
         ],
         (newPost) => {
-            if(newPost) {
-                return response.status(201).json({
-                    'postId': newPost.id, sucess: 'Post successfully created'
-                })
-            } 
+            if(newPost) return response.status(201).json({'postId': newPost.id, sucess: 'Post successfully created'})
         })
     },
     update: (request, response) => {
+        // Parameters
         let id = request.params.id;
         let content = request.body.content;
         let attachments = request.body.attachments;
  
+        // Waterfall
         asyncLib.waterfall([
             (done) => {
                 models.Posts.findOne({
-                    attributes: [ 'id', 'content', 'attachments'],
+                    attributes: [ 'id', 'content', 'attachments', 'updatedAt'],
                     where: { id: id }
                 })
                 .then((postFound) => {
@@ -76,30 +70,20 @@ console.log(err, idUsers)
                 }
             },
         ],
-            (postFound) => {
-                if (postFound) {
-                    response.status(200).json({'success': 'Post successfuly modified'})
-                } else {
-                    response.status(400).json({ 'error': 'An error occurred' })
-                } 
-            }
-        )           
+        (postFound) => {
+            postFound ? response.status(200).json({'success': 'Post successfuly modified'}) : response.status(400).json({ 'error': 'An error occurred' })
+        })           
     },
     searchOne: (request, response) => {
         // Parameters
-        const id = request.params.id;   
+        const id = request.params.id;
+
         models.Posts.findOne({
             attributes: [ 'id', 'content', 'attachments'],
             where: { id: id }
         })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            } else {
-            response.status(400).send({
-                message: `An error occurred : cannot found posts with id=${id}. Maybe posts was not found!`
-              });
-            }
+            data ? response.status(200).send(data) : response.status(400).send({message: `An error occurred : cannot found posts with id=${id}. Maybe posts was not found!`});
         })
         .catch(err => {
             response.status(400).send({
@@ -108,40 +92,27 @@ console.log(err, idUsers)
         });
     },
     searchAll: (request, response) => {
-        // Parameters
         models.Posts.findAll({
             attributes: [ 'id', 'content', 'attachments']
             })
         .then(data => {
-            if (data) {
-                response.status(200).send(data);
-            }
+            if (data) response.status(200).send(data);
         })
         .catch(err => {
-            response.status(400).send({
-                message: "An error occurred : while retrieving posts."
-            });
+            response.status(400).send({message: "An error occurred : while retrieving posts."});
         });
-      },
-    // Have to verify identity with ? Token ?
+    },
 
+    // Have to verify identity with ? Token ?
     delete: (request, response) => {
         // Parameters
-    const id = request.params.id;
-    
-    models.Posts.destroy({
-        where: { id: id }
-    })
+        const id = request.params.id;
+        
+        models.Posts.destroy({
+            where: { id: id }
+        })
         .then(num => {
-            if (num == 1) {
-            response.status(200).send({
-                message: "posts successfully deleted"
-                });
-            } else {
-                response.status(400).send({
-                message: `An error occurred : cannot delete posts with id=${id}.`
-                });
-            }
+            num == 1 ? response.status(200).send({message: "posts successfully deleted"}) : response.status(400).send({message: `An error occurred : cannot delete posts with id=${id}.`});
         })
         .catch(err => {
             response.status(404).send({

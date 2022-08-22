@@ -25,6 +25,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      isDeleted: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: 0
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
