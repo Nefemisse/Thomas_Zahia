@@ -4,12 +4,12 @@ const models = require('../models')
 module.exports = {
     create: (request, response) => {
         // Parameters
-        let idUsers = request.cookies.idUsers; // get token cookie
+        let idUsers = 2; // get idUser from token decode 
         let content = request.body.content;
         let attachments = request.body.attachments;
-
+    
         // Fields verification
-        if (content == "" || idUsers == "") {
+        if (content == "" ) {
             return response.status(400).json({'error': 'An error occured : Missing parameters'});
         }
         
@@ -25,6 +25,7 @@ module.exports = {
                     done(newPost);
                 })
                 .catch((err) => {
+                    console.log(err)
                     return response.status(500).json({'error': 'An error occurred : unable to create posts'})
                 });
             }

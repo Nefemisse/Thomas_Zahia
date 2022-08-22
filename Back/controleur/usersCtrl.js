@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 
 // REGEX
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const PASWORD_REGEX = /^(?=.*\d).{4,18}$/
+const PASWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[æÆÐ!@#&$()[{.\]\}-]).{5,255}$/
 
 //Routes
 module.exports = {
@@ -149,7 +149,6 @@ module.exports = {
         })
         .then(data => {
             if (data) {
-console.log(request.cookies);
                 response.status(200).send(data);
             } else {
             response.status(400).send({

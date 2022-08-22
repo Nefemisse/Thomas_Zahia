@@ -1,28 +1,34 @@
 <%- include('./partials/header'); %>
 <div class="container">
 
-  <!-- <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Entrez votre post">
-    <label class="input-group-text" for="inputGroupFile01">Upload</label>
-    <input type="file" class="form-control" id="inputGroupFile01">
-  </div> -->
-
+<form action="/home" method="post" onctype="multipart/form-data">
+    <input type="text"  name="content" class="form-control" placeholder="Content"><br>
+    <input type="file" name="attachments" class="form-control"><br>
+    <input type="submit" value="Enregistrer" class="btn btn-primary">
+</form> 
+<br>
  
   <% allPosts.forEach(function(item){ %>
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="width: 25rem;">
         <div class="card-body">
           <h5 class="card-title">
             <%= item.Users_idUsers %> 
           </h5>
           
           <p class="card-text"><%= item.createAt %> </p>
-          <p class="card-text"><%= item.content %> </p>
-          
         </div>
-        <img src="..." class="card-img-top" alt="...">
         <div class="card-body">
-          <a href="#" class="card-link">Submit</a>
-          <a href="#" class="card-link">supprimer</a>
+          <p class="card-text"><%= item.content %> </p>
+          <img src="/img/uploads/<%= item.attachments %>" alt="image " style="width: 22rem;">
+        
+              <a href="#" class="card-link">modifier</a>
+      
+          <button type='submit' method='delete'>
+              <a href="/deletePost?id<%= item.id %>" class="card-link">Delete</a>
+          </button>
+          
+          <a href="#" class="card-link">Comments</a>
+          <a href="#" class="card-link">like</a>
         </div>
       </div>
       <br>

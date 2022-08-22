@@ -2,9 +2,7 @@
 const express = require('express');
 const path = require('path');
 const route = require('./routes/homeRT');
-
-
-
+// const route = require('./routes/userRT');
 
 // Instanciation server
 const server = express();
@@ -32,9 +30,10 @@ server.use('/', require('./routes/homeRT'));
 
 
 
-// server.use(('/',route))
+
 // Launch server
 server.listen(8500, () =>{
     console.log( 'Server en écoute  http://localhost:8500');
 });
+
 

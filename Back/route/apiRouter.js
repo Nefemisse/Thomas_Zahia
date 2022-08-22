@@ -21,7 +21,7 @@ exports.router = (() => {
     // Posts routes
     apiRouter.route('/createPost').post(postsCtrl.create)
     apiRouter.route('/putPost').put(postsCtrl.update)
-    //apiRouter.route('deletePost').delete(postsCtrl.delete)
+    apiRouter.route('/deletePost/:id').delete(postsCtrl.delete)
     apiRouter.route('/getOnePost').get(postsCtrl.searchOne)
     apiRouter.route('/getAllPosts').get(postsCtrl.searchAllPosts)
 

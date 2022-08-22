@@ -15,9 +15,11 @@ route.get('/register',(req,res)=>{res.render('register');})
 route.post('/register',userCtrl.addUser)
 
 //profil
-route.get('/profile',(req,res)=>{
-    res.render('profile');
-})
+// route.get('/profile',(req,res)=>{
+//     res.render('profile');
+// })
+route.get('/profile', userCtrl.getUserByToken);
+
 
 route.get('/logout',userCtrl.logOut)
 // route.get('/getUserById/:id',userCtrl.getUserById);

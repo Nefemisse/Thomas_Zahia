@@ -32,7 +32,7 @@ exports.addUser = async (req, res) => {
 }             
 
 exports.getUserByToken = async (req, res, next) => {
-    
+    console.log('---toto---')
     const response = await fetch('http://localhost:8000/api/getOneUser',{
         headers: {
             'Authorization': localStorage.getItem('token')// Token à récupérer 
@@ -40,6 +40,8 @@ exports.getUserByToken = async (req, res, next) => {
      });
     const myJson = await response.json();
     console.log('----User Info---', myJson);
+    res.render('profile', {user : myJson});
+
     return next();
     
 }
@@ -59,7 +61,6 @@ exports.logUser = async (req, res, next) => {
             email : req.body.email,
             password  : req.body.password,
         }),
-
     })
   
     // Converting to JSON
@@ -75,7 +76,7 @@ exports.logUser = async (req, res, next) => {
         console.log(tokenFromLocalStorage);
        
         if(json.token && tokenFromLocalStorage) 
-            res.redirect('/profile')
+            res.redirect('/home')
         else
             res.render('login', json)
         
@@ -91,12 +92,17 @@ exports.logOut = async(req, res, next) => {
     if(tokenFromLocalStorage) {
         localStorage.clear();
         res.redirect('/')
-    }
-    // await fetch("http://localhost:8000/api/logout"),{
-
-    // }
+    };
 }
- // exports.getAllUsers = async (req, res) => {
+// exports.getProfile = async (req, res, next) => {
+//     // this.getUserByToken()
+//     if (req.user.id ) {
+//         res.render('profile', {user : req.user});
+//     } else {
+//         res.redirect('/');
+//     }
+// }
+//  exports.getAllUsers = async (req, res) => {
     
 //     const response = await fetch('http://localhost:8000/api/users');
 //     const myJson = await response.json();
